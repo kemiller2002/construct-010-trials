@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "check": "build",
+  "attempt": 5,
+  "exitCode": 0,
+  "signal": null,
+  "wallMilliseconds": 12257,
+  "timeoutMilliseconds": 600000,
+  "unauthorizedWrites": [],
+  "candidate": "5f667b8b2ba1841f14c6483bcced74ac20e876c0",
+  "notice": "Agent feedback only. Not acceptance evidence; independent verification (Dokimos) is unaffected.",
+  "stdoutTail": "  Determining projects to restore...\n<candidate>/pilot/ChronaTimer/ChronaTimer.fsproj : warning NU1900: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.\n  Restored <candidate>/pilot/ChronaTimer/ChronaTimer.fsproj (in 6 sec).\n<candidate>/pilot/ChronaTimer/ChronaTimer.fsproj : warning NU1900: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.\n  ChronaTimer -> <candidate>/pilot/ChronaTimer/bin/Release/net10.0/ChronaTimerPilot.dll\n\nBuild succeeded.\n\n<candidate>/pilot/ChronaTimer/ChronaTimer.fsproj : warning NU1900: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.\n<candidate>/pilot/ChronaTimer/ChronaTimer.fsproj : warning NU1900: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.\n    2 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:11.29\n",
+  "stderrTail": "An issue was encountered verifying workloads. For more information, run \"dotnet workload update\".\n"
+}
