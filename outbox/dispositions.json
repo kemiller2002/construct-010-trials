@@ -1,0 +1,265 @@
+{
+  "dispositions": [
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-0ff863bc5950",
+      "disposition": "escalated",
+      "note": "Q1 escalated: which business day receives the rounding remainder when a timer split at midnight is rounded to whole minutes (exact total vs whole minutes)? PROVISIONAL: the worked total is rounded once and distributed by cumulative rounding per business day (piece_k = round(cumulative_k) - round(cumulative_k-1)), so pieces sum exactly to the rounded total; a day whose share rounds to 0 gets no piece.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-23cf927c72c9",
+      "disposition": "escalated",
+      "note": "Q2 escalated: when timers or a timer and time recorded elsewhere overlap, which is authoritative and is the non-overlapping remainder recorded? PROVISIONAL: the already-authoritative ledger wins; the stopping timer records nothing authoritative, its whole would-be pieces are returned as ReconciliationRequired and one reconciliation obligation is opened (no partial remainder recorded, nothing discarded).",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-3e2f7ba3c4d7",
+      "disposition": "escalated",
+      "note": "Q3 escalated: threshold and measure for 'unusually long' timers. PROVISIONAL: worked time (pauses excluded) strictly above 12 hours, measured only at Stop, is held for review (Policy.longRunningThreshold).",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-45469cd6b249",
+      "disposition": "escalated",
+      "note": "Q4 escalated: one activity excluding pauses vs one per working segment. PROVISIONAL: one activity per business day worked, start = that day's first working instant floored to the minute (shifted earlier only if it would otherwise cross midnight), minutes = that day's share of the once-rounded total.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-6c9144421437",
+      "disposition": "escalated",
+      "note": "Q5 escalated: second Start while running/paused: refuse or stop the first? Code follows the approved DEC-TIMER-LIFECYCLE (Start only from Idle), so on the same device it is Rejected CHRONA.TIMER.INVALID_TRANSITION (provisional code). Across devices see Q11.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-7b0d9714cbff",
+      "disposition": "escalated",
+      "note": "Q6 escalated: command earlier than the timer's last event. PROVISIONAL: Pause/Resume/Stop with an instant before the timer's last accepted event are Rejected CHRONA.TIMER.CLOCK_MOVED_BACK; Inspect clamps negative spans to zero.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-8e646f47d2ae",
+      "disposition": "escalated",
+      "note": "Q7 escalated: how an exact half minute rounds. PROVISIONAL: half up (30s -> 1 minute, 90s -> 2 minutes), computed in exact ticks.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-9e469ed1a615",
+      "disposition": "escalated",
+      "note": "Q8 escalated: are timer commands refused between restart and explicit recovery? PROVISIONAL: after Restart, a device holding a persisted timer refuses Start/Pause/Resume/Stop with CHRONA.TIMER.RECOVERY_REQUIRED until Recover; Inspect, RecordManual and Recover are allowed; a device with no timer record is not blocked.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-b75d1ee28d0b",
+      "disposition": "escalated",
+      "note": "Q9 escalated: whose time zone defines the midnight boundary. PROVISIONAL: the scenario/person IANA zone (Scenario.Zone), handling DST-gap midnights (first valid local instant) and ambiguous midnights (earliest occurrence). Unknown zone: Stop effect reports Failed and RecordManual is Rejected CHRONA.TIME_ZONE.UNKNOWN.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-da40c42e1116",
+      "disposition": "escalated",
+      "note": "Q10 escalated: sub-second precision of stored instants. PROVISIONAL: instants kept at full DateTimeOffset tick precision as received; all arithmetic on UTC ticks.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-dad72230d3a6",
+      "disposition": "escalated",
+      "note": "Q11 escalated: one-active-timer per person or per device. PROVISIONAL: enforced per device (the timer is device state, DF-0005); a second device may start; when it stops, any overlap with authoritative time (including the other device's recorded pieces) becomes ReconciliationRequired plus one obligation rather than an authoritative overlap.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-e645519ae0a1",
+      "disposition": "escalated",
+      "note": "Q12 escalated: what review consists of and how held time becomes activities. PROVISIONAL: held time is kept on the device record (phase Held, worked preserved, visible via Inspect/Recover); it is never discarded or recorded, and all timer commands on that device are Rejected CHRONA.TIMER.HELD_PENDING_REVIEW. There is no review command in the contract, so held time is never released.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-f07b94d9b406",
+      "disposition": "escalated",
+      "note": "Q13 escalated: stop while paused. Code follows the approved DEC-TIMER-LIFECYCLE, which has Stop only from Running: Stop while Paused is Rejected CHRONA.TIMER.INVALID_TRANSITION (the user must Resume then Stop). Flagged because R2 does not forbid it.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-conflict-f87fce779ccf",
+      "disposition": "escalated",
+      "note": "Q14 escalated: illegal command: refused or no-op, and which code. PROVISIONAL: refused with Rejected \"CHRONA.TIMER.INVALID_TRANSITION\" (state unchanged). All codes except CHRONA.TIMER.CONCURRENT_CONFLICT are provisional names.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-extensionBehavior-09ac3c0ecabe",
+      "disposition": "implemented",
+      "note": "R3: Stop records exact whole minutes from measured timestamps (no six-minute rounding/inflation); every piece is validated so start+duration never crosses midnight. Billing figure is not part of the contract and not computed. Provisional choices per Q1/Q4/Q7.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-extensionBehavior-478842b330de",
+      "disposition": "implemented",
+      "note": "R1: Perform/Stop splits working segments at each business-day midnight; all pieces keep the timer lineage; pieces sum exactly to the rounded working total. Zone and remainder placement provisional (Q1, Q9).",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-extensionBehavior-90476b9445b0",
+      "disposition": "implemented",
+      "note": "R15: CurrentTime returns the instant supplied with the command (no clock read, no counter); Inspect derives Worked from stored segment timestamps.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-extensionBehavior-9faab2356f5c",
+      "disposition": "implemented",
+      "note": "R16: the TimerRecord (segments of timestamps) is persisted on every change; Restart loses no timer state and elapsed time after recovery is derived from the persisted timestamps, including time while the device was down.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-extensionBehavior-d71b9ac4792f",
+      "disposition": "implemented",
+      "note": "R10: instants stored as unambiguous DateTimeOffsets and compared in UTC; worked time from UTC ticks so DST cannot corrupt duration; LocalDate derived from the scenario IANA zone. Business-day zone and precision provisional (Q9, Q10). Only the R10 parts the contract expresses (UTC start, local date) are output; offset/local start time are derivable but not emitted.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-extensionBehavior-e5b836c48211",
+      "disposition": "implemented",
+      "note": "R8: timer pieces go through the same Validation.validate as manual entries (positive whole minutes, no midnight crossing, no overlap with authoritative activities). Project, activity type, tags, description and business purpose are not expressible in the frozen contract and are not checked. Failed timer validation yields ReconciliationRequired (provisional, Q2).",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-uncoveredRequirement-2307233d584e",
+      "disposition": "escalated",
+      "note": "Q15 escalated: R6 has no approved decision constructing it. PROVISIONAL: TimerRecord per device persisted on change and recovered explicitly; a manual record made while a device timer is Running opens one reconciliation obligation for that timer (CHRONA.TIMER.CONCURRENT_CONFLICT semantics), and its Stop returns ReconciliationRequired. Sign-out/shared-device policy and real browser storage are not implemented.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-uncoveredRequirement-37a52d28e653",
+      "disposition": "escalated",
+      "note": "Q16 escalated: R4 has no approved decision. PROVISIONAL: concurrent device timers are allowed; overlaps never become authoritative, they become ReconciliationRequired + an obligation (see Q2, Q11).",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-uncoveredRequirement-73106e0c6634",
+      "disposition": "escalated",
+      "note": "Q17 escalated: R5 has no approved decision. PROVISIONAL: overlap is half-open and checked against the single person's ledger (one actor/organization per scenario); Voided/Superseded/Submitted states, imports, restore and divergent edits are not representable in the contract and are not implemented.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-uncoveredRequirement-786030204124",
+      "disposition": "escalated",
+      "note": "Q18 escalated: R13 has no approved decision. PROVISIONAL: the timer works without any network notion (pure device state); conflicts become visible obligations; sync state, idempotent retries and reconnect are not implemented (not expressible in the contract).",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-uncoveredRequirement-a5d548c801de",
+      "disposition": "escalated",
+      "note": "Q19 escalated: R12 has no approved decision. PROVISIONAL: Recover returns the persisted timer (or None) with worked time from timestamps; commands are refused until Recover (Q8); elapsed time is never discarded.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-uncoveredRequirement-acb377bf3e7a",
+      "disposition": "escalated",
+      "note": "Q20 escalated: R17 has no approved decision and no test file is permitted for this arm. The adapter supports all nine scenario kinds; I only smoke-tested them ad hoc (basic, pause/resume, <30s, midnight in America/New_York, DST day, restart/recover, overlap, concurrent devices, long-running, invalid commands).",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-uncoveredRequirement-c9c829c6e34d",
+      "disposition": "escalated",
+      "note": "Q21 escalated: R14 has no approved decision. PROVISIONAL: only the concurrent timer conflict is reachable here; it is surfaced as a reconciliation obligation, and code CHRONA.TIMER.CONCURRENT_CONFLICT is defined but the contract's StopResult carries no code, so it is not emitted as a Rejected response. Other R14 diagnostics are out of the timer cohort's contract.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-uncoveredRequirement-fc70dac23f01",
+      "disposition": "escalated",
+      "note": "Q22 escalated: R7 has no approved decision. PROVISIONAL: worked > 12h at Stop -> HeldForReview with preserved worked time (see Q3, Q12). No detection while running.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    },
+    {
+      "obligationId": "OBL-COH-CHRONA-TIMER-undecidedEffectFailure-fdcdb9d55b8d",
+      "disposition": "escalated",
+      "note": "Q23 escalated: IFC-TIMER-PORTS leaves Stop effect failure undecided. PROVISIONAL: if Perform(Stop) reports Failed or Unknown the adapter keeps the timer in its source state (Running, segments untouched) and answers Rejected CHRONA.TIMER.STOP_EFFECT_FAILED / _UNKNOWN; time is never discarded. In this pure implementation Perform fails only for an unknown time zone or an exception.",
+      "files": [
+        "Extensions.fs",
+        "ChronaTimerAdapter.fs"
+      ]
+    }
+  ]
+}
